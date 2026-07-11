@@ -53,8 +53,20 @@ def create_app() -> FastAPI:
             "gpu": cfg_mod.gpu_info(),
             "cache": cfg_mod.cache_info(),
         }
+    # ---- startup logs ----
 
-    # ---- models ----
+    @app.get("/api/logs")
+    async def api_logs() -> dict[str, Any]:
+        path = VOLUME / "startup.log"
+        if not path.exists():
+            return {"log": "(no startup log yet)", "path": str(path)}
+        try:
+            text = path.read_text()[-8000:]
+        except Exception as e:  # noqa: BLE001
+            return {"log": f"error reading {path}: {e}", "path": str(path)}
+        return {"log": text, "path": str(path)}
+
+     # ---- models ----
 
     @app.get("/api/models")
     async def api_models(reload: bool = True) -> dict[str, Any]:
@@ -514,8 +526,8 @@ $('#restart-server').onclick = async () => {
 
 // logs
 $('#refresh-logs').onclick = async () => {
-  const s = await api('/api/status');
-  $('#logs-out').textContent = JSON.stringify(s, null, 2);
+  const s = await api('/api/logs');
+  $('#logs-out').textContent = s.log || JSON.stringify(s, null, 2);
 };
 
 refreshStatus(); refreshModels(); fetchConfig();
