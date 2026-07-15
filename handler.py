@@ -8,6 +8,7 @@ job polling loop while a background FastAPI serves the UI and introspection.
 from __future__ import annotations
 
 import os
+import re
 import time
 from pathlib import Path
 from typing import Any
