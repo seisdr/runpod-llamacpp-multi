@@ -19,7 +19,7 @@ import runpod
 import config as cfg_mod
 from handler import llama_health, handler
 
-VOLUME = Path(os.environ.get("RUNPOD_VOLUME", "/workspace"))
+VOLUME = Path(os.environ.get("RUNPOD_VOLUME", "/runpod-volume"))
 STARTUP_LOG = VOLUME / "startup.log"
 
 cfg = cfg_mod.RuntimeConfig.load()

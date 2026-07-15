@@ -20,11 +20,11 @@ RUN pip3 install --no-cache-dir --break-system-packages \
 
 COPY handler.py config.py web.py main.py /app/
 
-# Mount RunPod network volume at /workspace so HF pulls + config survive cold starts
-ENV LLAMA_CACHE=/workspace/llama-cache \
-    MODELS_DIR=/workspace/models \
-    CONFIG_DIR=/workspace/config \
-    RUNPOD_VOLUME=/workspace \
+# Mount RunPod network volume at /runpod-volume (serverless default) so HF pulls + config survive cold starts
+ENV LLAMA_CACHE=/runpod-volume/llama-cache \
+    MODELS_DIR=/runpod-volume/models \
+    CONFIG_DIR=/runpod-volume/config \
+    RUNPOD_VOLUME=/runpod-volume \
     LLAMA_MODELS="" \
     DEFAULT_QUANT=Q4_K_M \
     HF_PULL_MODE=auto \
