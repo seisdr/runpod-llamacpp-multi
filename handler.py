@@ -341,9 +341,13 @@ def handler(job: dict[str, Any]) -> dict[str, Any]:
     if not route:
         return {"error": f"Unknown method: {method}", "supported": sorted(set(METHOD_ROUTES) | META_METHODS)}
 
-    payload = inp.get("payload") or {}
     if not isinstance(payload, dict):
         return {"error": "payload must be a JSON object"}
+    # Merge top-level input fields (model, prompt, messages, max_tokens, etc.)
+    # into payload when payload is empty — callers send flat {"input": {...}}
+    if not payload:
+        skip = {"method", "model", "payload"}
+        payload = {k: v for k, v in inp.items() if k not in skip}
 
     body = normalize_payload(method, model, payload)
 
